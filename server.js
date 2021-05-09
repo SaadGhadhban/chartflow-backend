@@ -1,4 +1,5 @@
 require('dotenv').config({path:"./config.env"});
+const cors = require("cors");
 const express = require('express');
 const app = express();
 
@@ -18,6 +19,7 @@ mongoose
   });
 const errorHandler = require('./middleware/error');
 
+app.use(cors());
 app.use(express.json());
 app.use('/api/auth',require('./routes/auth'));
 app.use('/api/private',require('./routes/private'));
