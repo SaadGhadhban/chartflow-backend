@@ -3,13 +3,19 @@ const express = require('express');
 const app = express();
 
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/merntest', {useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex:true, useFindAndModify:true})
-.then(()=>{
-    console.log('connected to Database !')
-})
-.catch((err)=>{
-    console.log('error in connecting to database',err);
-})
+mongoose
+  .connect(`${process.env.DB_URL}`, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useFindAndModify: true,
+  })
+  .then(() => {
+    console.log("connected to Database !");
+  })
+  .catch((err) => {
+    console.log("error in connecting to database", err);
+  });
 const errorHandler = require('./middleware/error');
 
 app.use(express.json());

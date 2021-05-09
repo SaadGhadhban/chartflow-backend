@@ -64,19 +64,19 @@ exports.getPrivateData = (req,res,next)=>{
 
 
 exports.addChart = async(req,res,next)=>{
-    const {chart} = req.body;
-    const founduser = await User.findOne({_id:req.user._id})
-    const newChart = new Chart(chart);
-    founduser.charts.push(newChart);
-    newChart.user = founduser;
-    console.log(newChart);
-    await newChart.save();
-    await founduser.save()
+  const { chart } = req.body;
+  const founduser = await User.findOne({ _id: req.user._id });
+  const newChart = new Chart(chart);
+  founduser.charts.push(newChart);
+  newChart.user = founduser;
 
-    res.status(200).json({
-        success:true,
-        data:{chart,founduser}
-    })
+  await newChart.save();
+  await founduser.save();
+
+  res.status(200).json({
+    success: true,
+    data: { chart, founduser },
+  });
 }
 
 exports.privateCharts = async(req,res,next)=>{
@@ -89,3 +89,28 @@ exports.privateCharts = async(req,res,next)=>{
         data:{usercharts,username}
     })
 }
+
+exports.deletecharts = async (req, res, next) => {
+  const { id, chart } = req.body;
+  const foundChart = await Chart.findOne({ _id: id });
+
+  const filtered = foundChart.chartType.filter((item) => item != chart);
+
+  if (foundChart.chartType.length <= 1) {
+    await Chart.findOneAndDelete({ _id: id });
+    return res
+      .status(200)
+      .json({ success: true, data: { msg: "chart deleted successfully" } });
+  }
+  const updated = await Chart.findOneAndUpdate(
+    { _id: id },
+    { chartType: filtered },
+    { new: true }
+  );
+
+  await updated.save();
+
+  res
+    .status(200)
+    .json({ success: true, data: { msg: "chart deleted successfully" } });
+};

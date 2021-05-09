@@ -4,27 +4,28 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 
 const UserSchema = new mongoose.Schema({
-    username: {
-        type: String,
-        required: [true,'Please provide a username']
-    },
-    email: {
-        type: String,
-        required: [true,'Please provide an email'],
-        match: [
-            /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/,'please provide a valid email'
-        ]
-    },
-    password: {
-        type: String,
-        required: [true,'Please provide a password'],
-        minlength:5,
-        select: false
-    },
-    resetpasswordToken: String,
-    resetpasswordExpire:Date,
-    charts: [{type: mongoose.Schema.Types.ObjectId , ref:'Chart'}]
-
+  username: {
+    type: String,
+    required: [true, "Please provide a username"],
+  },
+  email: {
+    type: String,
+    required: [true, "Please provide an email"],
+    match: [
+      /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/,
+      "please provide a valid email",
+    ],
+    unique: [true, "This Email is already Registered"],
+  },
+  password: {
+    type: String,
+    required: [true, "Please provide a password"],
+    minlength: 5,
+    select: false,
+  },
+  resetpasswordToken: String,
+  resetpasswordExpire: Date,
+  charts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Chart" }],
 });
 
 UserSchema.pre('save',async function(next){
